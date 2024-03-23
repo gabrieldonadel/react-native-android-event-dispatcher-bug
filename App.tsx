@@ -1,96 +1,48 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React from 'react';
-import type {PropsWithChildren} from 'react';
 import {
   SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
   useColorScheme,
   View,
 } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
-
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+import CustomButtonView from './CustomButtonView';
 
 function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  const [events, setEvents] = React.useState<any[]>([]);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
+  const isFabricEnabled = (global as any).nativeFabricUIManager != null;
+  const isBridgelessEnabled = Boolean((global as any).RN$Bridgeless);
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
+    <SafeAreaView style={{flex: 1}}>
+      <View style={{padding: 20}}>
+        <Text style={styles.highlight}>
+          isFabricEnabled {String(isFabricEnabled)}
+        </Text>
+        <Text style={styles.highlight}>
+          isBridgelessEnabled {String(isBridgelessEnabled)}
+        </Text>
+      </View>
+      <View
+        style={{
+          alignItems: 'center',
+        }}>
+        <CustomButtonView
+          onChangeMessage={message => {
+            console.log('event', message);
+            setEvents(prev => [...prev, message]);
+          }}
+        />
+      </View>
+      <ScrollView style={{flex: 1}}>
+        <Text>Events:</Text>
+        {events.map((event, index) => {
+          return <Text key={index}>{JSON.stringify(event, null, 2)}</Text>;
+        })}
       </ScrollView>
     </SafeAreaView>
   );
